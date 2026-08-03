@@ -17,3 +17,5 @@ results/raw/*.dat
 # Divers
 .vscode/
 *.swp
+ns-allinone-3.42/
+ns-allinone-3.42.tar.bz2
