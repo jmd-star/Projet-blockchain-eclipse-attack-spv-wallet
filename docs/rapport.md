@@ -1,6 +1,6 @@
 # Simulation d'une attaque par éclipse sur wallet SPV en environnement mobile 3G/4G
 
-**Projet final — Blockchain et Technologies Distribuées**
+**Projet final — Blockchain**
 Master 1 RIST — Université Félix Houphouët-Boigny (UFHB)
 Année académique 2025-2026
 
@@ -8,7 +8,7 @@ Année académique 2025-2026
 
 ## 1. Contexte et objectif
 
-Ce projet étudie la vulnérabilité des **wallets SPV** (Simplified Payment Verification) face à l'**attaque par éclipse** — une attaque où un adversaire monopolise l'ensemble des connexions pair-à-pair (P2P) d'une victime pour l'isoler du réseau blockchain légitime — dans le contexte spécifique d'un **réseau mobile 3G/4G**, où mobilité, handovers et dégradation de signal créent des fenêtres de vulnérabilité récurrentes.
+Ce projet étudie la vulnérabilité des **wallets SPV** (Simplified Payment Verification) face à l'**attaque par éclipse** — une attaque où un adversaire monopolise l'ensemble des connexions pair-à-pair (P2P) d'une victime pour l'isoler du réseau blockchain légitime dans le contexte spécifique d'un **réseau mobile 3G/4G**, où mobilité, handovers et dégradation de signal créent des fenêtres de vulnérabilité récurrentes.
 
 L'hypothèse centrale testée : **les contraintes du réseau mobile (mobilité, qualité de signal) augmentent la surface d'exposition du wallet à une prise de contrôle adverse de ses slots de connexion**, comparativement à un réseau filaire stable.
 
@@ -17,7 +17,7 @@ L'hypothèse centrale testée : **les contraintes du réseau mobile (mobilité, 
 La simulation repose sur une architecture à deux couches, développée séparément pour des raisons de faisabilité dans le délai imparti :
 
 ### Couche réseau mobile (NS-3 / module LTE-LENA)
-Un environnement NS-3 simule un UE (User Equipment, représentant le wallet) se déplaçant entre deux eNodeB LTE, avec un algorithme de handover A3-RSRP (hystérésis 3 dB, temps de déclenchement 256 ms — valeurs standards de la littérature LTE). Chaque transition d'état RRC (`LteUeRrc::StateTransition`) est tracée et horodatée, servant d'indicateur des fenêtres de reconnexion/vulnérabilité.
+Un environnement NS-3 simule un UE (User Equipment, représentant le wallet) se déplaçant entre deux eNodeB LTE, avec un algorithme de handover A3-RSRP (hystérésis 3 dB, temps de déclenchement 256 ms valeurs standards de la littérature LTE). Chaque transition d'état RRC (`LteUeRrc::StateTransition`) est tracée et horodatée, servant d'indicateur des fenêtres de reconnexion/vulnérabilité.
 
 ### Couche blockchain (simulateur Python, Monte Carlo)
 Un modèle Monte Carlo simule le comportement du wallet SPV lors de chaque événement de reconnexion détecté par la couche réseau : à chaque reconnexion, les **K = 8 slots** du wallet sont renégociés parmi un pool de pairs composé de **N = 50 pairs honnêtes** et **r nœuds attaquants** (r ∈ {2, 4, 6}), chaque slot ayant une probabilité `r / (r + N)` d'être capturé par l'attaquant.
@@ -69,4 +69,4 @@ Sur les combinaisons testées (r ≤ 6, N = 50, événements ≤ 25), la probabi
 
 ## 7. Conclusion
 
-Cette étude confirme l'hypothèse centrale : les contraintes des réseaux mobiles 3G/4G — en particulier la mobilité élevée — augmentent significativement l'exposition des wallets SPV à une prise de contrôle partielle de leurs connexions P2P, comparativement à un environnement filaire stable. Si l'éclipse totale par pur hasard reste rare sur les échelles testées, le taux d'occupation adverse croissant constitue un indicateur d'alerte exploitable pour la détection précoce, et souligne l'intérêt de mécanismes de sélection de pairs plus robustes dans les wallets mobiles.
+Cette étude confirme l'hypothèse centrale : les contraintes des réseaux mobiles 3G/4G en particulier la mobilité élevée  augmentent significativement l'exposition des wallets SPV à une prise de contrôle partielle de leurs connexions P2P, comparativement à un environnement filaire stable. Si l'éclipse totale par pur hasard reste rare sur les échelles testées, le taux d'occupation adverse croissant constitue un indicateur d'alerte exploitable pour la détection précoce, et souligne l'intérêt de mécanismes de sélection de pairs plus robustes dans les wallets mobiles.
