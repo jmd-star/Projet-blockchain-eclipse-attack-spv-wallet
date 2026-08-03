@@ -1,0 +1,13 @@
+scenario,r_attackers,n_honest,reconnection_events,avg_peak_occupancy_rate,full_eclipse_probability
+wired,2,50,5,0.1231,0.0
+wired,4,50,5,0.188,0.0
+wired,6,50,5,0.2402,0.0
+moderate,2,50,11,0.1661,0.0
+moderate,4,50,11,0.2411,0.0
+moderate,6,50,11,0.3015,0.0
+high,2,50,25,0.2103,0.0
+high,4,50,25,0.2944,0.0
+high,6,50,25,0.3573,0.0
+degraded,2,50,11,0.1665,0.0
+degraded,4,50,11,0.2406,0.0
+degraded,6,50,11,0.2987,0.0

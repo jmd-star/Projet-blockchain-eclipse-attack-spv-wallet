@@ -1,0 +1,19 @@
+# NS-3 build artifacts
+build/
+cmake-cache/
+*.o
+*.so
+*.log
+*.pcap
+
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# Résultats volumineux (à adapter selon ta taille de données)
+results/raw/*.dat
+
+# Divers
+.vscode/
+*.swp
