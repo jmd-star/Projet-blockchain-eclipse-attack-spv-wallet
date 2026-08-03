@@ -5,7 +5,7 @@ Master 1 RIST — Université Félix Houphouët-Boigny (UFHB)
 
 ---
 
-## 1. Contexte et objectif
+## 1. Contexte et hypothèse 
 
 Ce projet étudie la vulnérabilité des **wallets SPV** (Simplified Payment Verification) face à l'**attaque par éclipse** — une attaque où un adversaire monopolise l'ensemble des connexions pair-à-pair (P2P) d'une victime pour l'isoler du réseau blockchain légitime dans le contexte spécifique d'un **réseau mobile 3G/4G**, où mobilité, handovers et dégradation de signal créent des fenêtres de vulnérabilité récurrentes.
 
