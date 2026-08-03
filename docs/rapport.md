@@ -2,7 +2,6 @@
 
 **Projet final — Blockchain**
 Master 1 RIST — Université Félix Houphouët-Boigny (UFHB)
-Année académique 2025-2026
 
 ---
 
