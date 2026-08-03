@@ -1,7 +1,6 @@
 # Simulation d'attaque par éclipse sur wallet SPV (réseau mobile 3G/4G)
 
-Projet final - Blockchain et Technologies Distribuées - M1 RIST - UFHB
-Deadline : 08 août 2026
+Projet final - Blockchain - M1 RIST - UFHB
 
 ## Structure du projet
 
@@ -13,6 +12,3 @@ Deadline : 08 août 2026
 - `analysis/` : scripts Python d'analyse et de génération des métriques
 - `docs/` : notes, captures, documentation de rendu
 
-## Statut
-
-En cours de mise en place (installation NS-3 à venir)
