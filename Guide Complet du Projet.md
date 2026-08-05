@@ -1,7 +1,6 @@
 # Guide technique complet Simulation d'attaque par éclipse sur wallet SPV (réseau mobile 3G/4G)
 
 Projet final — Blockchain — M1 RIST — UFHB
-Ce guide reproduit intégralement l'environnement et les résultats du projet.
 
 **Environnement de référence :** WSL2, Ubuntu 26.04 LTS ("resolute"), Python 3.14 par défaut.
 
