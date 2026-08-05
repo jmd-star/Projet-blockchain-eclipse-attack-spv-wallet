@@ -1,4 +1,4 @@
-# Guide technique complet — Simulation d'attaque par éclipse sur wallet SPV (réseau mobile 3G/4G)
+# Guide technique complet Simulation d'attaque par éclipse sur wallet SPV (réseau mobile 3G/4G)
 
 Projet final — Blockchain — M1 RIST — UFHB
 Ce guide reproduit intégralement l'environnement et les résultats du projet.
