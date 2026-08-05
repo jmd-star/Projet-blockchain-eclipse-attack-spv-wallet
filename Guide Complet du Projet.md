@@ -46,7 +46,7 @@ sudo apt install -y \
     doxygen graphviz
 ```
 
-> **Note :** sur certaines versions récentes d'Ubuntu, le paquet `libxml2` seul n'a pas de candidat d'installation — `libxml2-dev` suffit (il l'inclut déjà). Si `wireshark-common` n'est pas trouvable, retirez-le de la liste ; il n'est pas critique.
+> **Note :** sur certaines versions récentes d'Ubuntu, le paquet `libxml2` seul n'a pas de candidat d'installation `libxml2-dev` suffit (il l'inclut déjà). Si `wireshark-common` n'est pas trouvable, retirez-le de la liste ; il n'est pas critique.
 
 ---
 
