@@ -1,7 +1,7 @@
 # Guide technique complet — Simulation d'attaque par éclipse sur wallet SPV (réseau mobile 3G/4G)
 
-Projet final — Blockchain et Technologies Distribuées — M1 RIST — UFHB
-Ce guide reproduit intégralement l'environnement et les résultats du projet, du système vierge jusqu'au rapport final.
+Projet final — Blockchain — M1 RIST — UFHB
+Ce guide reproduit intégralement l'environnement et les résultats du projet.
 
 **Environnement de référence :** WSL2, Ubuntu 26.04 LTS ("resolute"), Python 3.14 par défaut.
 
@@ -18,9 +18,6 @@ Ce guide reproduit intégralement l'environnement et les résultats du projet, d
 7. [Génération des 4 scénarios](#7-génération-des-4-scénarios)
 8. [Simulateur Python Monte Carlo](#8-simulateur-python-monte-carlo)
 9. [Génération des graphiques](#9-génération-des-graphiques)
-10. [Rapport final](#10-rapport-final)
-11. [Publication sur GitHub](#11-publication-sur-github)
-12. [Dépannage — problèmes rencontrés et solutions](#12-dépannage--problèmes-rencontrés-et-solutions)
 
 ---
 
@@ -98,8 +95,6 @@ Projet final - Blockchain et Technologies Distribuées - M1 RIST - UFHB
 - `docs/` : rapport final
 EOF
 
-git add .
-git commit -m "Structure initiale du projet"
 ```
 
 > **Point important :** NS-3 doit être installé **à l'extérieur** de ce que vous versionnez, ou explicitement exclu via `.gitignore` comme ci-dessus (voir section 12 pour le nettoyage si vous avez oublié cette étape).
@@ -163,8 +158,6 @@ $PY ./ns3 configure --enable-examples --enable-tests
 $PY ./ns3 build
 ```
 
-> La compilation complète prend 20 à 40 minutes selon les ressources allouées à WSL2. Le module `lte` doit apparaître dans la liste des "Modules configured to be built" affichée après `configure`.
-
 **Vérification rapide :**
 
 ```bash
@@ -172,13 +165,11 @@ $PY ./ns3 run hello-simulator
 $PY ./ns3 run lena-simple-epc
 ```
 
-Les deux doivent s'exécuter sans erreur.
-
 ---
 
 ## 6. Script NS-3 : extraction des stats de mobilité
 
-Ce script simule un UE (le wallet) se déplaçant entre deux eNodeB LTE, avec un vrai algorithme de handover (A3-RSRP) et une zone de déplacement couvrant tout l'espace entre les deux antennes. Il enregistre chaque transition d'état RRC dans un CSV.
+Ce script simule le wallet se déplaçant entre deux eNodeB LTE, avec un vrai algorithme de handover (A3-RSRP) et une zone de déplacement couvrant tout l'espace entre les deux antennes. Il enregistre chaque transition d'état RRC dans un CSV.
 
 ```bash
 cd ~/eclipse-attack-reseau/ns-allinone-3.42/ns-3.42
@@ -306,7 +297,7 @@ CPPEOF
 mkdir -p results/raw results/graphs
 ```
 
-**Points de conception importants** (voir section 12 pour le détail des bugs évités) :
+**Points de conception importants** (voir section 11 pour le détail des bugs évités) :
 - L'allocateur de position (`RandomBoxPositionAllocator`) est construit **directement en C++** avec ses variables aléatoires X/Y/Z, plutôt que via une chaîne de caractères — plus robuste face aux erreurs de syntaxe d'attributs.
 - L'algorithme de handover **A3-RSRP** est activé explicitement (NS-3 utilise `NoOpHandoverAlgorithm` par défaut, qui ne déclenche jamais de handover).
 - La zone de mobilité couvre `X ∈ [0, 500]` — exactement l'espace entre les deux eNodeB — pour que l'UE traverse réellement la zone de handover.
@@ -606,76 +597,6 @@ PYEOF
 python3 analysis/generate_graphs.py
 ls results/graphs/
 ```
-
----
-
-## 10. Rapport final
-
-Le rapport (méthodologie, résultats, recommandations, limites) est rédigé dans `docs/rapport.md`. Son contenu complet reprend les sections 1 à 9 de ce guide sous une forme narrative destinée à l'évaluation — voir le fichier `docs/rapport.md` du dépôt (une version Word est également disponible sur demande).
-
-```bash
-mkdir -p ~/eclipse-attack-reseau/docs
-cp ~/eclipse-attack-reseau/results/graphs/*.png ~/eclipse-attack-reseau/docs/
-```
-
----
-
-## 11. Publication sur GitHub
-
-```bash
-cd ~/eclipse-attack-reseau
-git add .
-git commit -m "Projet final : simulation attaque eclipse SPV wallet - NS-3/LTE + Monte Carlo"
-
-git remote add origin https://github.com/<votre-compte>/<votre-depot>.git
-git branch -M main
-git push -u origin main
-```
-
-**Authentification :** GitHub exige un **Personal Access Token** (PAT) à la place du mot de passe depuis 2021 :
-`Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token (classic)`, cocher `repo`, générer, puis utiliser ce token comme "mot de passe" lors du `git push`.
-
----
-
-## 12. Dépannage — problèmes rencontrés et solutions
-
-Cette section documente les erreurs effectivement rencontrées durant le développement, pour éviter de les reproduire ou pour les diagnostiquer rapidement si elles réapparaissent.
-
-### 12.1 `ValueError: action 'store_true' is not valid for positional arguments`
-**Cause :** incompatibilité entre le script `ns3` de la version 3.42 et Python 3.14 (validation stricte d'argparse introduite dans les versions récentes de Python).
-**Solution :** utiliser Python 3.12 via `pyenv` pour exécuter `./ns3` (section 4) plutôt que de patcher le script à la main — les tentatives de patch manuel (remplacer `action="store_true"` par `nargs="?"`) cassent la logique de dispatch des sous-commandes du script, car celle-ci dépend justement de ces arguments positionnels pour savoir laquelle a été appelée.
-
-### 12.2 Les 4 scénarios produisent des CSV identiques (aucun handover)
-**Cause :** deux problèmes cumulés :
-1. `LteHelper` utilise `NoOpHandoverAlgorithm` par défaut — aucun handover n'est jamais déclenché sans configuration explicite.
-2. `RandomBoxPositionAllocator` sans bornes explicites utilise une zone minuscule par défaut (~1m³) — l'UE ne se déplace jamais réellement.
-**Solution :** activer explicitement `A3RsrpHandoverAlgorithm` et définir une zone de mobilité couvrant tout l'espace entre les eNodeB (section 6).
-
-### 12.3 `NS_ASSERT failed ... ObjectFactory::Create - can't use an ObjectFactory without setting a TypeId first`
-**Cause :** erreur de syntaxe dans une chaîne d'attributs NS-3 imbriquée (mauvais séparateur — virgule au lieu de `|` entre les attributs X/Y/Z d'un `RandomBoxPositionAllocator` construit via chaîne de caractères).
-**Solution :** construire l'allocateur de position directement en C++ (créer les objets `UniformRandomVariable` et les assigner via `SetAttribute`) plutôt que de le décrire dans une chaîne — plus verbeux mais qui élimine toute la classe d'erreurs de syntaxe de chaînes d'attributs imbriquées (section 6).
-
-### 12.4 Taux de succès d'éclipse totale à 0,00% partout
-**Cause :** ce n'est pas un bug — avec N=50 pairs honnêtes et seulement 5 à 25 événements de reconnexion, la probabilité de remplir les 8 slots simultanément par pur hasard est de l'ordre de 10⁻⁶ pour r=6. Le modèle "tout ou rien" est statistiquement invisible à cette échelle.
-**Solution :** ajouter une métrique continue — le **taux d'occupation adverse pic** — qui différencie bien les scénarios même quand l'éclipse totale reste rare (section 8). Le résultat "P(éclipse totale) ≈ 0%" reste pertinent à mentionner dans le rapport : il illustre que les attaques éclipse réelles ne comptent pas sur le hasard seul, mais combinent la fenêtre de vulnérabilité avec de la manipulation d'adressage IP.
-
-### 12.5 `IndexError: list index out of range` dans le simulateur Python
-**Cause :** chemin relatif incorrect — le simulateur Python cherchait les CSV dans `~/eclipse-attack-reseau/results/raw/`, alors que NS-3 les avait générés dans `~/eclipse-attack-reseau/ns-allinone-3.42/ns-3.42/results/raw/` (répertoire de travail différent selon où la commande `./ns3 run` est lancée).
-**Solution :** copier explicitement les CSV générés par NS-3 vers le dossier `results/raw/` à la racine du projet avant de lancer le simulateur Python (fin de la section 7).
-
-### 12.6 Dépôt Git alourdi par les fichiers NS-3 (~99 Mo, 4300+ fichiers)
-**Cause :** `git add .` lancé depuis la racine du projet avant que `ns-allinone-3.42/` soit exclu du `.gitignore` — tout le code source de NS-3 (avec sa documentation, ses tests, ses exemples) a été versionné par erreur.
-**Solution :**
-```bash
-git rm -r --cached ns-allinone-3.42
-git rm --cached ns-allinone-3.42.tar.bz2
-echo "ns-allinone-3.42/" >> .gitignore
-echo "ns-allinone-3.42.tar.bz2" >> .gitignore
-git add .gitignore
-git commit -m "Retire NS-3 du dépôt (outil externe)"
-git push
-```
-Cette commande retire les fichiers du suivi Git sans les supprimer du disque. L'historique Git garde une trace de l'ancien commit (donc `.git/` ne redescend pas immédiatement en taille), mais ce n'est pas bloquant pour l'utilisation ou l'évaluation du dépôt.
 
 ---
 
